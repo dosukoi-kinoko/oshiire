@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB } from "@/lib/db";
 import { OshiCard } from "@/components/OshiCard";
@@ -9,10 +11,25 @@ import { GENRES } from "@/lib/genres";
 import type { Genre, Oshi } from "@/lib/db";
 
 export default function Home() {
+  const router = useRouter();
   const [nickname] = usePref("nickname", "");
   const [layout, setLayout] = usePref("layout", "grid");
+
+  // 初回起動時はチュートリアルへ (企画書§4)
+  useEffect(() => {
+    if (!localStorage.getItem("tutorialDone")) router.replace("/welcome");
+  }, [router]);
+
+  // ホームは箱+単独の推しだけ表示(メンバーは箱ページから)
   const oshis = useLiveQuery(
-    () => (hasIDB() ? db.oshis.orderBy("lastViewedAt").reverse().toArray() : []),
+    () =>
+      hasIDB()
+        ? db.oshis
+            .orderBy("lastViewedAt")
+            .reverse()
+            .filter((o) => !o.parentId)
+            .toArray()
+        : [],
     [],
   );
   const events = useLiveQuery(

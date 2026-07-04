@@ -113,6 +113,13 @@ export default function SettingsPage() {
           </div>
         </section>
 
+        <section>
+          <h2 className="text-sm font-bold">ヘルプ</h2>
+          <a href="/welcome" className="card mt-2 block w-full py-3 text-center text-sm font-bold">
+            📖 チュートリアルをもう一度見る
+          </a>
+        </section>
+
         <p className="pt-4 text-center text-[11px]" style={{ color: "var(--muted)" }}>
           オシイレ 〜推し入れ〜 MVP (フェーズ1)
           <br />

@@ -12,12 +12,17 @@ export type Genre =
   | "other";
 
 export type OshiStatus = "active" | "graduated" | "dormant";
+export type OshiKind = "box" | "solo"; // 箱推し階層 (FR-10a)
 
 export interface Oshi {
   id: string;
   name: string;
+  kind: OshiKind; // 箱(部屋・グループ) or 個人
+  parentId?: string; // 個人が所属する箱のid (FR-10a)
   genre: Genre;
   color: string; // 推しカラー (FR-12)
+  subtitle?: string; // 英字サブタイトル "ISEGAHAMA BEYA" (FR-12a)
+  profile?: { label: string; value: string }[]; // 情報テーブル (FR-12a)
   status: OshiStatus;
   oshiStartDate?: string; // 推し始めた日 (FR-16a)
   birthday?: string; // MM-DD
@@ -67,6 +72,23 @@ db.version(1).stores({
   events: "id, oshiId, date",
   settings: "key",
 });
+
+// v2: 箱推し階層 (FR-10a)。既存データは「個人」として引き継ぐ
+db.version(2)
+  .stores({
+    oshis: "id, name, genre, status, lastViewedAt, kind, parentId",
+    records: "id, oshiId, date, createdAt",
+    events: "id, oshiId, date",
+    settings: "key",
+  })
+  .upgrade((tx) =>
+    tx
+      .table("oshis")
+      .toCollection()
+      .modify((o) => {
+        if (!o.kind) o.kind = "solo";
+      }),
+  );
 
 export const uid = () =>
   `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;

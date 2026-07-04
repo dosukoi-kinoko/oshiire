@@ -2,14 +2,21 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB, type Oshi, type OshiStatus } from "@/lib/db";
+import { GENRES } from "@/lib/genres";
 import { PageHeader } from "@/components/PageHeader";
 
 // 推し編集: 推しカラー(FR-12)・SNSリンク・記念日(FR-16a)・ステータス(FR-13)
+// +箱推し対応(FR-10a): 所属箱・サブタイトル・情報テーブル(FR-12a)
 export default function EditOshiPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [oshi, setOshi] = useState<Oshi | null>(null);
+  const boxes = useLiveQuery(
+    () => (hasIDB() ? db.oshis.where("kind").equals("box").toArray() : []),
+    [],
+  );
 
   useEffect(() => {
     if (hasIDB()) db.oshis.get(id).then((o) => setOshi(o ?? null));
@@ -17,15 +24,21 @@ export default function EditOshiPage() {
 
   if (!oshi) return null;
   const set = (patch: Partial<Oshi>) => setOshi({ ...oshi, ...patch });
+  const g = GENRES[oshi.genre];
 
   const save = async () => {
-    await db.oshis.put(oshi);
+    await db.oshis.put({
+      ...oshi,
+      profile: (oshi.profile ?? []).filter((r) => r.label.trim() || r.value.trim()),
+    });
     router.back();
   };
 
   const remove = async () => {
     if (!confirm(`「${oshi.name}」を削除しますか?記録も一緒に削除されます`)) return;
     await db.transaction("rw", db.oshis, db.records, db.events, async () => {
+      // 箱を消してもメンバーは残す(所属だけ解除)
+      await db.oshis.where("parentId").equals(id).modify({ parentId: undefined });
       await db.records.where("oshiId").equals(id).delete();
       await db.events.where("oshiId").equals(id).delete();
       await db.oshis.delete(id);
@@ -58,6 +71,85 @@ export default function EditOshiPage() {
             </span>
           </div>
         </label>
+        <label className={label}>
+          英字サブタイトル（ページ上部に飾り表示・任意）
+          <input
+            className={input}
+            value={oshi.subtitle ?? ""}
+            onChange={(e) => set({ subtitle: e.target.value })}
+            placeholder="例: ISEGAHAMA BEYA"
+          />
+        </label>
+
+        {oshi.kind === "solo" && (boxes?.length ?? 0) > 0 && (
+          <div className={label}>
+            所属する箱
+            <div className="mt-1.5 flex gap-2 overflow-x-auto pb-1">
+              <button
+                onClick={() => set({ parentId: undefined })}
+                className={`shrink-0 rounded-full px-4 py-2 text-sm ${!oshi.parentId ? "chip" : "card"}`}
+              >
+                なし
+              </button>
+              {boxes!
+                .filter((b) => b.id !== id)
+                .map((b) => (
+                  <button
+                    key={b.id}
+                    onClick={() => set({ parentId: b.id })}
+                    className={`shrink-0 rounded-full px-4 py-2 text-sm ${oshi.parentId === b.id ? "chip" : "card"}`}
+                  >
+                    📦 {b.name}
+                  </button>
+                ))}
+            </div>
+          </div>
+        )}
+
+        <div className={label}>
+          {oshi.kind === "box" ? `${g.boxLabel}情報` : "プロフィール"}（項目は自由に追加できます）
+          {(oshi.profile ?? []).map((row, i) => (
+            <div key={i} className="mt-1.5 flex gap-2">
+              <input
+                className="card w-28 shrink-0 px-3 py-2.5 text-sm outline-none"
+                value={row.label}
+                placeholder="項目名"
+                onChange={(e) => {
+                  const p = [...(oshi.profile ?? [])];
+                  p[i] = { ...p[i], label: e.target.value };
+                  set({ profile: p });
+                }}
+              />
+              <input
+                className="card min-w-0 flex-1 px-3 py-2.5 text-sm outline-none"
+                value={row.value}
+                placeholder="内容"
+                onChange={(e) => {
+                  const p = [...(oshi.profile ?? [])];
+                  p[i] = { ...p[i], value: e.target.value };
+                  set({ profile: p });
+                }}
+              />
+              <button
+                aria-label="行を削除"
+                onClick={() => set({ profile: (oshi.profile ?? []).filter((_, j) => j !== i) })}
+                className="shrink-0 px-1 text-sm"
+                style={{ color: "var(--muted)" }}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <button
+            onClick={() =>
+              set({ profile: [...(oshi.profile ?? []), { label: "", value: "" }] })
+            }
+            className="card mt-2 w-full py-2 text-sm"
+          >
+            ＋ 行を追加（例: 所在地・所属{g.memberLabel}数・出身地）
+          </button>
+        </div>
+
         <label className={label}>
           推し始めた日（推し歴の起点になります）
           <input type="date" className={input} value={oshi.oshiStartDate ?? ""} onChange={(e) => set({ oshiStartDate: e.target.value })} />
