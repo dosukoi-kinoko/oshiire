@@ -214,6 +214,17 @@ export default function OshiHubPage() {
         </section>
       )}
 
+      {/* 個人ページ: 箱への変更案内 (迷子防止) */}
+      {!isBox && !parent && (
+        <Link
+          href={`/oshi/${id}/edit`}
+          className="mx-4 mt-3 block rounded-xl border border-dashed px-4 py-3 text-xs"
+          style={{ borderColor: "var(--border)", color: "var(--muted)" }}
+        >
+          🎁 これはグループ・部屋ですか?「編集 → 種別」で箱に変えると、中に推し個人のページを追加できます →
+        </Link>
+      )}
+
       {/* 祭壇への入口 (FR-26a) */}
       <Link
         href={`/oshi/${id}/altar`}

@@ -78,22 +78,19 @@ export default function Home() {
         </Link>
       )}
 
-      {/* レイアウト切替 (NFR-19) */}
+      {/* レイアウト切替 (NFR-19): 文字ラベル付きでわかりやすく */}
       {oshis && oshis.length > 0 && (
-        <div className="mt-5 flex items-center justify-between">
+        <div className="mt-5">
           <h2 className="font-bold">マイ推し</h2>
-          <div className="flex gap-1">
+          <div className="mt-2 flex gap-1.5">
             {LAYOUTS.map((l) => (
               <button
                 key={l.key}
                 onClick={() => setLayout(l.key)}
-                aria-label={l.label}
-                className="rounded-full px-2 py-1 text-sm"
-                style={{
-                  background: layout === l.key ? "var(--accent-soft)" : "transparent",
-                }}
+                className={`rounded-full px-3 py-1.5 text-[11px] font-bold ${layout === l.key ? "chip" : "card"}`}
+                style={layout !== l.key ? { color: "var(--muted)" } : undefined}
               >
-                {l.emoji}
+                {l.emoji} {l.label}
               </button>
             ))}
           </div>

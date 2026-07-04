@@ -12,7 +12,7 @@ export const THEMES: { key: Theme; label: string }[] = [
 ];
 
 export const LAYOUTS: { key: HomeLayout; label: string; emoji: string }[] = [
-  { key: "collage", label: "コラージュ", emoji: "🃏" },
+  { key: "collage", label: "コラージュ", emoji: "🖼️" },
   { key: "grid", label: "グリッド", emoji: "🔲" },
   { key: "stream", label: "ストリーム", emoji: "🌊" },
 ];
