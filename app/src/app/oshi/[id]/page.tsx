@@ -97,17 +97,23 @@ export default function OshiHubPage() {
           </Link>
         </div>
 
-        {parent && (
-          <Link
-            href={`/oshi/${parent.id}`}
-            className="mt-1 inline-block rounded-full bg-black/25 px-3 py-1 text-[11px]"
-          >
-            🎁 {parent.name} 所属
-          </Link>
-        )}
+        {/* 種別バッジ: 個人/団体をひと目で判別(オーナー要望) */}
+        <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+          <span className="rounded-full bg-black/30 px-3 py-1 text-[11px] font-bold">
+            {isBox ? `🎁 団体ページ・${g.boxLabel}` : "👤 個人ページ"}
+          </span>
+          {parent && (
+            <Link
+              href={`/oshi/${parent.id}`}
+              className="rounded-full bg-black/30 px-3 py-1 text-[11px] underline underline-offset-2"
+            >
+              🎁 {parent.name} 所属
+            </Link>
+          )}
+        </div>
 
         <div
-          className="mx-auto mt-3 flex h-28 w-28 items-center justify-center rounded-full text-5xl font-black"
+          className="mx-auto mt-3 flex h-28 w-28 items-center justify-center overflow-hidden rounded-full text-5xl font-black"
           style={{
             border: "3px solid #d9b64a",
             boxShadow: "0 0 0 6px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.25)",
@@ -115,7 +121,12 @@ export default function OshiHubPage() {
             fontFamily: '"Hiragino Mincho ProN", "Yu Mincho", serif',
           }}
         >
-          {oshi.name.slice(0, 1)}
+          {oshi.photo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={oshi.photo} alt={oshi.name} className="h-full w-full object-cover" />
+          ) : (
+            oshi.name.slice(0, 1)
+          )}
         </div>
 
         {oshi.subtitle && (

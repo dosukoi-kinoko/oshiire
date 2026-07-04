@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB, type Oshi, type OshiStatus } from "@/lib/db";
 import { getGenre } from "@/lib/genres";
+import { fileToDataUrl } from "@/lib/image";
 import { PageHeader } from "@/components/PageHeader";
 
 // 推し編集: 推しカラー(FR-12)・SNSリンク・記念日(FR-16a)・ステータス(FR-13)
@@ -57,6 +58,45 @@ export default function EditOshiPage() {
           名前
           <input className={input} value={oshi.name} onChange={(e) => set({ name: e.target.value })} />
         </label>
+        <div className={label}>
+          写真（丸アイコンに表示・任意）
+          <div className="mt-2 flex items-center gap-4">
+            <div
+              className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full text-3xl font-black"
+              style={{ border: "3px solid #d9b64a", background: `${oshi.color}33` }}
+            >
+              {oshi.photo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={oshi.photo} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <span style={{ fontFamily: '"Hiragino Mincho ProN", serif' }}>{oshi.name.slice(0, 1)}</span>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="card cursor-pointer px-4 py-2 text-center text-sm font-bold">
+                📷 写真を選ぶ
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const f = e.target.files?.[0];
+                    if (f) set({ photo: await fileToDataUrl(f) });
+                  }}
+                />
+              </label>
+              {oshi.photo && (
+                <button onClick={() => set({ photo: undefined })} className="text-xs" style={{ color: "var(--muted)" }}>
+                  写真を削除して文字に戻す
+                </button>
+              )}
+            </div>
+          </div>
+          <p className="mt-1.5 text-[10px] font-normal" style={{ color: "var(--muted)" }}>
+            ご自身で撮影した写真をお使いください（著作権・肖像権にご配慮を）
+          </p>
+        </div>
+
         <label className={label}>
           推しカラー
           <div className="mt-1.5 flex items-center gap-3">

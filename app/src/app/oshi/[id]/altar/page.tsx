@@ -277,7 +277,7 @@ export default function AltarPage() {
         {/* ご神体: モノグラム台座 */}
         <div className="pointer-events-none absolute left-1/2 top-[30%] -translate-x-1/2 -translate-y-1/2 text-center">
           <div
-            className="mx-auto flex h-28 w-28 items-center justify-center rounded-full text-5xl font-black"
+            className="mx-auto flex h-28 w-28 items-center justify-center overflow-hidden rounded-full text-5xl font-black"
             style={{
               border: "4px solid #f0cf6a",
               boxShadow: `0 0 36px ${c}cc, 0 0 0 8px #d9a93f55, 0 0 70px #ffd93b44`,
@@ -287,7 +287,12 @@ export default function AltarPage() {
               fontFamily: '"Hiragino Mincho ProN", "Yu Mincho", serif',
             }}
           >
-            {oshi.name.slice(0, 1)}
+            {oshi.photo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={oshi.photo} alt={oshi.name} className="h-full w-full object-cover" />
+            ) : (
+              oshi.name.slice(0, 1)
+            )}
           </div>
           <p
             className="mt-3 text-lg font-black tracking-widest text-white"

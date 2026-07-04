@@ -27,7 +27,7 @@ export function OshiCard({ oshi, small }: { oshi: Oshi; small?: boolean }) {
         }}
       >
         <span
-          className={`flex items-center justify-center rounded-full font-black ${small ? "h-12 w-12 text-xl" : "h-16 w-16 text-2xl"}`}
+          className={`flex items-center justify-center overflow-hidden rounded-full font-black ${small ? "h-12 w-12 text-xl" : "h-16 w-16 text-2xl"}`}
           style={{
             border: "2px solid #d9b64a",
             color: "var(--text)",
@@ -35,7 +35,12 @@ export function OshiCard({ oshi, small }: { oshi: Oshi; small?: boolean }) {
             fontFamily: '"Hiragino Mincho ProN", "Yu Mincho", serif',
           }}
         >
-          {oshi.name.slice(0, 1)}
+          {oshi.photo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={oshi.photo} alt="" className="h-full w-full object-cover" />
+          ) : (
+            oshi.name.slice(0, 1)
+          )}
         </span>
         {isBox && (
           <span className="absolute left-2 top-2 rounded-full bg-black/35 px-2 py-0.5 text-[10px] font-bold text-white">
