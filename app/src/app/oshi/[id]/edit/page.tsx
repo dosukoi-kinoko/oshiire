@@ -183,6 +183,32 @@ export default function EditOshiPage() {
           </label>
         ))}
 
+        <h3 className="mt-6 font-bold">種別</h3>
+        <p className="text-xs" style={{ color: "var(--muted)" }}>
+          「箱」にすると、この中に推し個人のページを追加できるようになります
+        </p>
+        <div className="mt-2 flex gap-2">
+          <button
+            onClick={() => set({ kind: "box", parentId: undefined })}
+            className={`rounded-full px-4 py-2 text-sm ${oshi.kind === "box" ? "chip" : "card"}`}
+          >
+            🎁 箱(グループ・部屋)
+          </button>
+          <button
+            onClick={async () => {
+              const memberCount = await db.oshis.where("parentId").equals(id).count();
+              if (memberCount > 0) {
+                alert(`この箱には${memberCount}人の推しが入っているため、個人には変更できません`);
+                return;
+              }
+              set({ kind: "solo" });
+            }}
+            className={`rounded-full px-4 py-2 text-sm ${oshi.kind === "solo" ? "chip" : "card"}`}
+          >
+            👤 個人
+          </button>
+        </div>
+
         <h3 className="mt-6 font-bold">ステータス (FR-13)</h3>
         <div className="mt-2 flex gap-2">
           {(
