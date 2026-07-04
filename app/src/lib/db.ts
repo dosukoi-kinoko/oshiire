@@ -8,6 +8,7 @@ export type Genre =
   | "idol"
   | "sports"
   | "actor"
+  | "stage"
   | "music"
   | "other";
 

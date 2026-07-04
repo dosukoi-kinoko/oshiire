@@ -77,7 +77,7 @@ export default function EditOshiPage() {
             className={input}
             value={oshi.subtitle ?? ""}
             onChange={(e) => set({ subtitle: e.target.value })}
-            placeholder="例: ISEGAHAMA BEYA"
+            placeholder="例: MY PRECIOUS STAR"
           />
         </label>
 
@@ -99,7 +99,7 @@ export default function EditOshiPage() {
                     onClick={() => set({ parentId: b.id })}
                     className={`shrink-0 rounded-full px-4 py-2 text-sm ${oshi.parentId === b.id ? "chip" : "card"}`}
                   >
-                    📦 {b.name}
+                    🎁 {b.name}
                   </button>
                 ))}
             </div>

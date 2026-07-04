@@ -22,10 +22,13 @@ function parseRss(xml: string) {
         .trim();
     };
     const pubDate = pick("pubDate");
+    // 直近1週間のニュースのみ表示(オーナー指定)
+    const d = pubDate ? new Date(pubDate) : null;
+    if (d && Date.now() - d.getTime() > 7 * 86400000) continue;
     items.push({
       title: pick("title"),
       link: pick("link"),
-      pubDate: pubDate ? new Date(pubDate).toLocaleDateString("ja-JP") : "",
+      pubDate: d ? d.toLocaleDateString("ja-JP") : "",
       source: pick("source") || "Google News",
     });
   }

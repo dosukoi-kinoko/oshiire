@@ -63,14 +63,14 @@ export default function OshiHubPage() {
     : null;
   const latest = (records ?? []).slice(0, 3);
   const nextEvent = events?.[0];
-  const snsLinks = (
-    [
-      ["𝕏", "X (Twitter)", oshi.sns.x],
-      ["📷", "Instagram", oshi.sns.instagram],
-      ["▶️", "YouTube", oshi.sns.youtube],
-      ["🎵", "TikTok", oshi.sns.tiktok],
-    ] as const
-  ).filter(([, , url]) => !!url);
+  const snsAll = [
+    ["𝕏", "X (Twitter)", oshi.sns.x],
+    ["📷", "Instagram", oshi.sns.instagram],
+    ["▶️", "YouTube", oshi.sns.youtube],
+    ["🎵", "TikTok", oshi.sns.tiktok],
+  ] as const;
+  const snsLinks = snsAll.filter(([, , url]) => !!url);
+  const unsetSns = snsAll.filter(([, , url]) => !url);
 
   return (
     <main>
@@ -102,7 +102,7 @@ export default function OshiHubPage() {
             href={`/oshi/${parent.id}`}
             className="mt-1 inline-block rounded-full bg-black/25 px-3 py-1 text-[11px]"
           >
-            📦 {parent.name} 所属
+            🎁 {parent.name} 所属
           </Link>
         )}
 
@@ -282,48 +282,61 @@ export default function OshiHubPage() {
         )}
       </SectionLink>
 
-      {/* SNS小窓 (穴3の再定義: リンクカード) */}
-      {snsLinks.length > 0 && (
-        <section className="mx-4 mt-3">
-          <h3 className="mb-2 text-sm font-bold tracking-widest" style={{ color: "var(--muted)" }}>
-            SNS 小窓
-          </h3>
-          <div className="space-y-2">
-            {snsLinks.map(([icon, label, url]) => (
-              <a
-                key={label}
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="card block overflow-hidden"
+      {/* SNS小窓 (穴3の再定義: リンクカード)。未設定でも常時表示して追加导线を明示 */}
+      <section className="mx-4 mt-3">
+        <h3 className="mb-2 text-sm font-bold tracking-widest" style={{ color: "var(--muted)" }}>
+          SNS 小窓
+        </h3>
+        <div className="space-y-2">
+          {snsLinks.map(([icon, label, url]) => (
+            <a
+              key={label}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card block overflow-hidden"
+            >
+              <div
+                className="flex items-center gap-2.5 px-4 py-2.5"
+                style={{ borderTop: `3px solid ${oshi.color}` }}
               >
-                <div
-                  className="flex items-center gap-2.5 px-4 py-2.5"
-                  style={{ borderTop: `3px solid ${oshi.color}` }}
+                <span
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white"
+                  style={{ background: oshi.color }}
                 >
-                  <span
-                    className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white"
-                    style={{ background: oshi.color }}
-                  >
-                    {icon}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold">
-                      {oshi.name} {label}
-                    </p>
-                    <p className="truncate text-[11px]" style={{ color: "var(--muted)" }}>
-                      {url!.replace(/^https?:\/\//, "")}
-                    </p>
-                  </div>
-                  <span className="text-xs font-bold" style={{ color: oshi.color }}>
-                    開く ↗
-                  </span>
+                  {icon}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-bold">
+                    {oshi.name} {label}
+                  </p>
+                  <p className="truncate text-[11px]" style={{ color: "var(--muted)" }}>
+                    {url!.replace(/^https?:\/\//, "")}
+                  </p>
                 </div>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
+                <span className="text-xs font-bold" style={{ color: oshi.color }}>
+                  開く ↗
+                </span>
+              </div>
+            </a>
+          ))}
+          {/* 未設定のSNSは「＋追加」タイルで見せる */}
+          {unsetSns.length > 0 && (
+            <div className="grid grid-cols-2 gap-2">
+              {unsetSns.map(([icon, label]) => (
+                <Link
+                  key={label}
+                  href={`/oshi/${id}/edit`}
+                  className="flex items-center justify-center gap-1.5 rounded-xl border-2 border-dashed py-3 text-xs font-bold"
+                  style={{ borderColor: "var(--border)", color: "var(--muted)" }}
+                >
+                  <span>{icon}</span> ＋ {label}を追加
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* ニュース (FR-18) */}
       <section className="card mx-4 mt-3 p-4">

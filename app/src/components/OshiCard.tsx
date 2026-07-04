@@ -39,7 +39,7 @@ export function OshiCard({ oshi, small }: { oshi: Oshi; small?: boolean }) {
         </span>
         {isBox && (
           <span className="absolute left-2 top-2 rounded-full bg-black/35 px-2 py-0.5 text-[10px] font-bold text-white">
-            📦 {g.boxLabel}
+            🎁 {g.boxLabel}
           </span>
         )}
       </div>

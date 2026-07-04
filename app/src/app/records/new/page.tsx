@@ -75,7 +75,7 @@ function NewRecordForm() {
         </label>
         <label className="block text-sm font-bold">
           タイトル
-          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="例: 春場所 千秋楽!" className="card mt-1.5 w-full px-4 py-3 outline-none" />
+          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="例: 初めての生の推し、最高だった!" className="card mt-1.5 w-full px-4 py-3 outline-none" />
         </label>
         <label className="block text-sm font-bold">
           本文（1行でもOK）

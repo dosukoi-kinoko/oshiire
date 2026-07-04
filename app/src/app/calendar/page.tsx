@@ -188,7 +188,7 @@ function AddEventSheet({ date, onClose }: { date: string; onClose: () => void })
           autoFocus
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="例: 春場所 初日"
+          placeholder="例: ライブ・公演・発売日など"
           className="card mt-3 w-full px-4 py-3 outline-none"
         />
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1">

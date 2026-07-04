@@ -75,13 +75,13 @@ function NewOshiForm() {
             onClick={() => setKind("box")}
             className="card block w-full p-5 text-left"
           >
-            <span className="text-3xl">📦</span>
+            <span className="text-3xl">🎁</span>
             <p className="mt-2 font-bold">箱ごと推す</p>
             <p className="mt-1 text-xs leading-relaxed" style={{ color: "var(--muted)" }}>
               部屋・グループ・チームをまるごと登録。
               あとから中に力士・メンバーの個人ページを追加できます
               <br />
-              例: 伊勢ヶ濱部屋、好きなアイドルグループ
+              例: アイドルグループ・相撲部屋・劇団・チーム
             </p>
           </button>
           <button
@@ -112,7 +112,7 @@ function NewOshiForm() {
               ? "箱を登録"
               : "個人を登録"
         }
-        sub={fromBox ? `📦 ${fromBox.name}` : "2つ入力するだけ✨"}
+        sub={fromBox ? `🎁 ${fromBox.name}` : "2つ入力するだけ✨"}
       />
       <div className="space-y-6 p-4">
         <label className="block">
@@ -123,7 +123,7 @@ function NewOshiForm() {
             autoFocus
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder={kind === "box" ? "例: 伊勢ヶ濱部屋" : "例: 尊富士"}
+            placeholder={kind === "box" ? "推しのグループ・部屋・チーム名" : "推しの名前"}
             className="card mt-2 w-full px-4 py-3 outline-none"
           />
         </label>
@@ -196,7 +196,7 @@ function NewOshiForm() {
                   }}
                   className={`shrink-0 rounded-full px-4 py-2 text-sm ${parentId === b.id ? "chip" : "card"}`}
                 >
-                  📦 {b.name}
+                  🎁 {b.name}
                 </button>
               ))}
             </div>
@@ -209,7 +209,7 @@ function NewOshiForm() {
           className="btn-accent w-full py-3.5 disabled:opacity-40"
         >
           {kind === "box"
-            ? `この${g?.boxLabel ?? "箱"}をオシイレに入れる 📦`
+            ? `この${g?.boxLabel ?? "箱"}をオシイレに入れる 🎁`
             : "この推しをオシイレに入れる 🗄️"}
         </button>
         {!fromBox && (
