@@ -118,6 +118,24 @@ export default function SettingsPage() {
           <a href="/welcome" className="card mt-2 block w-full py-3 text-center text-sm font-bold">
             📖 チュートリアルをもう一度見る
           </a>
+          <button
+            onClick={async () => {
+              if (!confirm("すべての推し・記録・予定を削除して、初回起動の状態に戻します。よろしいですか?")) return;
+              if (!confirm("本当に削除しますか?この操作は元に戻せません(必要なら先にエクスポートしてください)")) return;
+              await db.transaction("rw", db.oshis, db.records, db.events, db.settings, async () => {
+                await db.oshis.clear();
+                await db.records.clear();
+                await db.events.clear();
+                await db.settings.clear();
+              });
+              localStorage.clear();
+              location.href = "/";
+            }}
+            className="card mt-2 block w-full py-3 text-center text-sm font-bold"
+            style={{ color: "var(--muted)" }}
+          >
+            🗑️ すべてリセットして初回状態に戻す
+          </button>
         </section>
 
         <p className="pt-4 text-center text-[11px]" style={{ color: "var(--muted)" }}>
