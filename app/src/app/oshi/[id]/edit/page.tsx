@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB, type Oshi, type OshiStatus } from "@/lib/db";
-import { GENRES } from "@/lib/genres";
+import { getGenre } from "@/lib/genres";
 import { PageHeader } from "@/components/PageHeader";
 
 // 推し編集: 推しカラー(FR-12)・SNSリンク・記念日(FR-16a)・ステータス(FR-13)
@@ -24,7 +24,7 @@ export default function EditOshiPage() {
 
   if (!oshi) return null;
   const set = (patch: Partial<Oshi>) => setOshi({ ...oshi, ...patch });
-  const g = GENRES[oshi.genre];
+  const g = getGenre(oshi.genre);
 
   const save = async () => {
     await db.oshis.put({

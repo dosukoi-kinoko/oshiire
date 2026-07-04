@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB } from "@/lib/db";
-import { GENRES } from "@/lib/genres";
+import { getGenre } from "@/lib/genres";
 import { PageHeader } from "@/components/PageHeader";
 
 // 記録詳細の独立ページ (FR-11a): /records/[id]
@@ -24,7 +24,7 @@ export default function RecordDetailPage() {
         記録が見つかりません
       </main>
     );
-  const g = oshi ? GENRES[oshi.genre] : null;
+  const g = oshi ? getGenre(oshi.genre) : null;
 
   const remove = async () => {
     if (!confirm("この記録を削除しますか?")) return;

@@ -100,6 +100,28 @@ body {
   transform: rotate(-0.4deg);
 }
 
+/* 祭壇アニメーション (FR-26a/NFR-19b) */
+@keyframes altar-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.12);
+  }
+}
+@keyframes altar-float {
+  0%,
+  100% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: -5px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;

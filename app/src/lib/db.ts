@@ -14,12 +14,22 @@ export type Genre =
 export type OshiStatus = "active" | "graduated" | "dormant";
 export type OshiKind = "box" | "solo"; // 箱推し階層 (FR-10a)
 
+// 祭壇デコ (FR-26a v1): 絵文字パーツの配置(x,yは%)
+export interface AltarPart {
+  id: string;
+  emoji: string;
+  x: number;
+  y: number;
+  size: number;
+}
+
 export interface Oshi {
   id: string;
   name: string;
   kind: OshiKind; // 箱(部屋・グループ) or 個人
   parentId?: string; // 個人が所属する箱のid (FR-10a)
-  genre: Genre;
+  genre: Genre | (string & {}); // プリセット or 自由入力ジャンル (FR-10)
+  altar?: { parts: AltarPart[] }; // 常設祭壇 (FR-26a)
   color: string; // 推しカラー (FR-12)
   subtitle?: string; // 英字サブタイトル "ISEGAHAMA BEYA" (FR-12a)
   profile?: { label: string; value: string }[]; // 情報テーブル (FR-12a)

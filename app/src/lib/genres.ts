@@ -79,12 +79,41 @@ export const GENRES: Record<
 
 export const GENRE_KEYS = Object.keys(GENRES) as Genre[];
 
-// 推しページのテーマ色スウォッチ (FR-12a): サンプルHTML準拠の6色
-export const SWATCHES = [
-  "#2b4a8b", // 紺
-  "#a02040", // 臙脂
-  "#1f6f50", // 緑
-  "#6b4fa0", // 紫
-  "#22222a", // 黒
-  "#c9a227", // 金
+export type GenreInfo = (typeof GENRES)[Genre];
+
+// 自由入力ジャンル対応 (FR-10): プリセットになければ汎用プリセットを返す
+export function getGenre(g: string): GenreInfo {
+  return (
+    (GENRES as Record<string, GenreInfo>)[g] ?? {
+      label: g,
+      emoji: "💖",
+      recordLabel: "推し活記録",
+      starLabel: "よき",
+      defaultColor: "#e585b0",
+      ticket: true,
+      boxLabel: "グループ",
+      memberLabel: "メンバー",
+    }
+  );
+}
+
+// 推しページのテーマ色スウォッチ (FR-12a): アプリテーマと調和する配色に切替(穴26の思想)
+export const SWATCHES_BY_THEME: Record<string, string[]> = {
+  // ファッション誌風: 深く鮮やかな色(サンプルHTML準拠)
+  stylish: ["#2b4a8b", "#a02040", "#1f6f50", "#6b4fa0", "#22222a", "#c9a227"],
+  // クール大人: 彩度を抑えた上品トーン
+  minimal: ["#3f4a5a", "#8a4b55", "#4a6b5d", "#6a5a7a", "#2a2a2a", "#a08a4f"],
+  // 夢かわいい: パステルと調和する淡色
+  pastel: ["#e79fc4", "#b9a7e6", "#8fd0bd", "#94bfe9", "#f2c48d", "#f0a8a0"],
+};
+
+export function getSwatches(theme: string): string[] {
+  return SWATCHES_BY_THEME[theme] ?? SWATCHES_BY_THEME.stylish;
+}
+
+// 祭壇デコパーツ (FR-26a/NFR-19d): キラキラ×おごそか×ラブリーの3系統
+export const ALTAR_PARTS: { group: string; emojis: string[] }[] = [
+  { group: "キラキラ", emojis: ["✨", "🌟", "💫", "⭐", "🎇", "🫧"] },
+  { group: "おごそか", emojis: ["🕯️", "⛩️", "🏮", "🌕", "🪷", "🍶", "🌿"] },
+  { group: "ラブリー", emojis: ["🎀", "💐", "🌸", "💝", "🩷", "🌷", "🦢", "🍡"] },
 ];

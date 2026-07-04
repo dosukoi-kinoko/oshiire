@@ -5,7 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB } from "@/lib/db";
-import { GENRES, SWATCHES } from "@/lib/genres";
+import { getGenre, getSwatches } from "@/lib/genres";
+import { usePref } from "@/lib/prefs";
 import { NewsList } from "@/components/NewsList";
 import { OshiCard } from "@/components/OshiCard";
 
@@ -13,6 +14,7 @@ import { OshiCard } from "@/components/OshiCard";
 export default function OshiHubPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const [theme] = usePref("theme", "stylish");
   const oshi = useLiveQuery(() => (hasIDB() ? db.oshis.get(id) : undefined), [id]);
   const parent = useLiveQuery(
     () => (oshi?.parentId && hasIDB() ? db.oshis.get(oshi.parentId) : undefined),
@@ -54,7 +56,7 @@ export default function OshiHubPage() {
       </main>
     );
 
-  const g = GENRES[oshi.genre];
+  const g = getGenre(oshi.genre);
   const isBox = oshi.kind === "box";
   const days = oshi.oshiStartDate
     ? Math.floor((Date.now() - new Date(oshi.oshiStartDate).getTime()) / 86400000) + 1
@@ -138,7 +140,7 @@ export default function OshiHubPage() {
         <span className="shrink-0 text-xs font-bold" style={{ color: "var(--muted)" }}>
           テーマ色
         </span>
-        {[...new Set([...SWATCHES, oshi.color])].map((c) => (
+        {[...new Set([...getSwatches(theme), oshi.color])].map((c) => (
           <button
             key={c}
             aria-label={`テーマ色 ${c}`}
@@ -189,21 +191,59 @@ export default function OshiHubPage() {
               ＋ {g.memberLabel}を追加
             </Link>
           </div>
-          {(members?.length ?? 0) === 0 ? (
-            <p className="card p-4 text-center text-xs" style={{ color: "var(--muted)" }}>
-              まだ{g.memberLabel}がいません。
-              <br />
-              推しの{g.memberLabel}の個人ページを作りましょう✨
-            </p>
-          ) : (
+          {(members?.length ?? 0) > 0 && (
             <div className="grid grid-cols-2 gap-3">
               {members!.map((m) => (
                 <OshiCard key={m.id} oshi={m} />
               ))}
             </div>
           )}
+          {/* 大きくわかりやすい推し追加ボタン (オーナー要望) */}
+          <Link
+            href={`/oshi/new?box=${id}`}
+            className="card mt-3 flex items-center justify-center gap-2 border-2 border-dashed py-4 font-bold"
+            style={{ borderColor: oshi.color, color: oshi.color }}
+          >
+            <span className="text-xl">＋</span> 推しを追加（{g.memberLabel}のページを作る）
+          </Link>
+          {(members?.length ?? 0) === 0 && (
+            <p className="mt-2 text-center text-xs" style={{ color: "var(--muted)" }}>
+              この{g.boxLabel}の中に、推しの{g.memberLabel}の個人ページを作れます✨
+            </p>
+          )}
         </section>
       )}
+
+      {/* 祭壇への入口 (FR-26a) */}
+      <Link
+        href={`/oshi/${id}/altar`}
+        className="card mx-4 mt-3 block overflow-hidden"
+      >
+        <div
+          className="flex items-center gap-3 p-4"
+          style={{
+            background: `linear-gradient(120deg, ${oshi.color}2e, transparent 70%)`,
+          }}
+        >
+          <span className="text-3xl">⛩️</span>
+          <div className="flex-1">
+            <p className="font-bold">
+              {oshi.name}の祭壇
+              {(oshi.altar?.parts.length ?? 0) > 0 && (
+                <span className="chip ml-2 px-2 py-0.5 text-xs">
+                  {oshi.altar!.parts.length}デコ
+                </span>
+              )}
+            </p>
+            <p className="text-xs" style={{ color: "var(--muted)" }}>
+              キラキラ✨おごそか🕯️ラブリー🎀にデコって飾ろう
+            </p>
+          </div>
+          <span className="text-sm" style={{ color: "var(--muted)" }}>
+            →
+          </span>
+        </div>
+      </Link>
 
       {/* 直近イベント */}
       {nextEvent && (

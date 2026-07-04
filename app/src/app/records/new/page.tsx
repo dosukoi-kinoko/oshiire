@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB, uid } from "@/lib/db";
-import { GENRES } from "@/lib/genres";
+import { getGenre } from "@/lib/genres";
 import { PageHeader } from "@/components/PageHeader";
 
 export default function NewRecordPage() {
@@ -31,7 +31,7 @@ function NewRecordForm() {
   const [heart, setHeart] = useState(false);
 
   const selected = oshis?.find((o) => o.id === oshiId);
-  const g = selected ? GENRES[selected.genre] : null;
+  const g = selected ? getGenre(selected.genre) : null;
 
   const save = async () => {
     if (!oshiId || !title.trim()) return;
@@ -63,7 +63,7 @@ function NewRecordForm() {
                   onClick={() => setOshiId(o.id)}
                   className={`shrink-0 rounded-full px-4 py-2 text-sm ${oshiId === o.id ? "chip" : "card"}`}
                 >
-                  {GENRES[o.genre].emoji} {o.name}
+                  {getGenre(o.genre).emoji} {o.name}
                 </button>
               ))}
             </div>

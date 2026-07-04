@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB, type Oshi } from "@/lib/db";
-import { GENRES } from "@/lib/genres";
+import { getGenre } from "@/lib/genres";
 
 export function OshiCard({ oshi, small }: { oshi: Oshi; small?: boolean }) {
-  const g = GENRES[oshi.genre];
+  const g = getGenre(oshi.genre);
   const isBox = oshi.kind === "box";
   const memberCount = useLiveQuery(
     () =>

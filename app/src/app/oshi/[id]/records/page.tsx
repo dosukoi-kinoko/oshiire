@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB } from "@/lib/db";
-import { GENRES } from "@/lib/genres";
+import { getGenre } from "@/lib/genres";
 import { PageHeader } from "@/components/PageHeader";
 
 // 記録一覧の独立ページ (FR-11a): /oshi/[id]/records
@@ -20,7 +20,7 @@ export default function OshiRecordsPage() {
   );
 
   if (!oshi) return null;
-  const g = GENRES[oshi.genre];
+  const g = getGenre(oshi.genre);
 
   return (
     <main>

@@ -3,8 +3,8 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db, hasIDB, uid, type Genre, type OshiKind } from "@/lib/db";
-import { GENRES, GENRE_KEYS } from "@/lib/genres";
+import { db, hasIDB, uid, type OshiKind } from "@/lib/db";
+import { GENRES, GENRE_KEYS, getGenre } from "@/lib/genres";
 import { PageHeader } from "@/components/PageHeader";
 
 export default function NewOshiPage() {
@@ -32,12 +32,18 @@ function NewOshiForm() {
 
   const [kind, setKind] = useState<OshiKind | null>(fromBoxId ? "solo" : null);
   const [name, setName] = useState("");
-  const [genre, setGenre] = useState<Genre | null>(null);
+  const [genre, setGenre] = useState<string | null>(null);
+  const [customMode, setCustomMode] = useState(false);
+  const [customGenre, setCustomGenre] = useState("");
   const [parentId, setParentId] = useState<string | undefined>(
     fromBoxId ?? undefined,
   );
 
-  const effGenre = fromBox ? fromBox.genre : genre;
+  const effGenre = fromBox
+    ? fromBox.genre
+    : customMode
+      ? customGenre.trim() || null
+      : genre;
 
   const save = async () => {
     if (!name.trim() || !effGenre || !kind) return;
@@ -50,7 +56,7 @@ function NewOshiForm() {
       genre: effGenre,
       color:
         (parentId && boxes?.find((b) => b.id === parentId)?.color) ||
-        GENRES[effGenre].defaultColor,
+        getGenre(effGenre).defaultColor,
       status: "active",
       sns: {},
       createdAt: Date.now(),
@@ -94,14 +100,14 @@ function NewOshiForm() {
     );
   }
 
-  const g = effGenre ? GENRES[effGenre] : null;
+  const g = effGenre ? getGenre(effGenre) : null;
 
   return (
     <main>
       <PageHeader
         title={
           fromBox
-            ? `${GENRES[fromBox.genre].memberLabel}を追加`
+            ? `${getGenre(fromBox.genre).memberLabel}を追加`
             : kind === "box"
               ? "箱を登録"
               : "個人を登録"
@@ -129,10 +135,13 @@ function NewOshiForm() {
               {GENRE_KEYS.map((key) => (
                 <button
                   key={key}
-                  onClick={() => setGenre(key)}
+                  onClick={() => {
+                    setGenre(key);
+                    setCustomMode(false);
+                  }}
                   className="card flex flex-col items-center gap-1 p-3"
                   style={
-                    genre === key
+                    !customMode && genre === key
                       ? { borderColor: "var(--accent)", background: "var(--accent-soft)" }
                       : undefined
                   }
@@ -141,7 +150,29 @@ function NewOshiForm() {
                   <span className="text-xs font-bold">{GENRES[key].label}</span>
                 </button>
               ))}
+              {/* 自由入力ジャンル (FR-10) */}
+              <button
+                onClick={() => setCustomMode(true)}
+                className="card flex flex-col items-center gap-1 p-3"
+                style={
+                  customMode
+                    ? { borderColor: "var(--accent)", background: "var(--accent-soft)" }
+                    : undefined
+                }
+              >
+                <span className="text-2xl">✏️</span>
+                <span className="text-xs font-bold">自分で入力</span>
+              </button>
             </div>
+            {customMode && (
+              <input
+                autoFocus
+                value={customGenre}
+                onChange={(e) => setCustomGenre(e.target.value)}
+                placeholder="例: VTuber、鉄道、宝塚..."
+                className="card mt-2 w-full px-4 py-3 outline-none"
+              />
+            )}
           </div>
         )}
 

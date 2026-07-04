@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB, uid, type TicketStatus } from "@/lib/db";
-import { GENRES } from "@/lib/genres";
+import { getGenre } from "@/lib/genres";
 import { PageHeader } from "@/components/PageHeader";
 
 const TICKET: Record<TicketStatus, string> = {
@@ -109,7 +109,7 @@ export default function CalendarPage() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-bold">{e.title}</p>
                   <p className="text-xs" style={{ color: "var(--muted)" }}>
-                    {o ? `${GENRES[o.genre].emoji} ${o.name}` : ""} {TICKET[e.ticket]}
+                    {o ? `${getGenre(o.genre).emoji} ${o.name}` : ""} {TICKET[e.ticket]}
                   </p>
                 </div>
                 <TicketToggle event={e} />
@@ -198,7 +198,7 @@ function AddEventSheet({ date, onClose }: { date: string; onClose: () => void })
               onClick={() => setOshiId(o.id)}
               className={`shrink-0 rounded-full px-4 py-2 text-sm ${oshiId === o.id ? "chip" : "card"}`}
             >
-              {GENRES[o.genre].emoji} {o.name}
+              {getGenre(o.genre).emoji} {o.name}
             </button>
           ))}
         </div>

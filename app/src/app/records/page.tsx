@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB } from "@/lib/db";
-import { GENRES } from "@/lib/genres";
+import { getGenre } from "@/lib/genres";
 import { PageHeader } from "@/components/PageHeader";
 
 // 記録タイムライン (企画書§4「記録画面」): 全推し横断
@@ -42,7 +42,7 @@ export default function RecordsTimelinePage() {
                 <span style={{ color: "var(--muted)" }}>{r.date}</span>
                 {o && (
                   <span className="chip px-2 py-0.5">
-                    {GENRES[o.genre].emoji} {o.name}
+                    {getGenre(o.genre).emoji} {o.name}
                   </span>
                 )}
                 <span className="ml-auto">

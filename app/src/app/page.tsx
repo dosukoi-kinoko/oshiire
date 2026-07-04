@@ -7,8 +7,8 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db, hasIDB } from "@/lib/db";
 import { OshiCard } from "@/components/OshiCard";
 import { usePref, LAYOUTS, type HomeLayout } from "@/lib/prefs";
-import { GENRES } from "@/lib/genres";
-import type { Genre, Oshi } from "@/lib/db";
+import { getGenre } from "@/lib/genres";
+import type { Oshi } from "@/lib/db";
 
 export default function Home() {
   const router = useRouter();
@@ -135,13 +135,13 @@ function OshiCollection({
   layout: HomeLayout;
 }) {
   if (layout === "stream") {
-    const genres = [...new Set(oshis.map((o) => o.genre))] as Genre[];
+    const genres = [...new Set(oshis.map((o) => o.genre))];
     return (
       <div className="mt-3 space-y-4">
         {genres.map((genre) => (
           <section key={genre}>
             <h3 className="mb-2 text-sm font-bold" style={{ color: "var(--muted)" }}>
-              {GENRES[genre].emoji} {GENRES[genre].label}
+              {getGenre(genre).emoji} {getGenre(genre).label}
             </h3>
             <div className="flex gap-3 overflow-x-auto pb-2">
               {oshis
