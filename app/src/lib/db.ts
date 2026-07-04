@@ -24,13 +24,16 @@ export interface AltarPart {
   size: number;
 }
 
+// 祭壇の雛形 (FR-26a): 和風/聖堂/祝祭
+export type AltarStyle = "wa" | "chapel" | "fiesta";
+
 export interface Oshi {
   id: string;
   name: string;
   kind: OshiKind; // 箱(部屋・グループ) or 個人
   parentId?: string; // 個人が所属する箱のid (FR-10a)
   genre: Genre | (string & {}); // プリセット or 自由入力ジャンル (FR-10)
-  altar?: { parts: AltarPart[] }; // 常設祭壇 (FR-26a)
+  altar?: { style?: AltarStyle; parts: AltarPart[] }; // 常設祭壇 (FR-26a)
   color: string; // 推しカラー (FR-12)
   subtitle?: string; // 英字サブタイトル "ISEGAHAMA BEYA" (FR-12a)
   profile?: { label: string; value: string }[]; // 情報テーブル (FR-12a)

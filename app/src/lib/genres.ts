@@ -121,9 +121,18 @@ export function getSwatches(theme: string): string[] {
   return SWATCHES_BY_THEME[theme] ?? SWATCHES_BY_THEME.stylish;
 }
 
-// 祭壇デコパーツ (FR-26a/NFR-19d): キラキラ×おごそか×ラブリーの3系統
+// 祭壇の雛形3種 (FR-26a・オーナー指定): 和風/聖堂/祝祭
+export const ALTAR_STYLES = [
+  { key: "wa", label: "和", emoji: "⛩️", desc: "厳かな日本風" },
+  { key: "chapel", label: "聖堂", emoji: "🕊️", desc: "ステンドグラス風" },
+  { key: "fiesta", label: "祝祭", emoji: "🌼", desc: "キラキラギラギラ" },
+] as const;
+
+// 祭壇デコパーツ (FR-26a/NFR-19d): 5系統に拡充
 export const ALTAR_PARTS: { group: string; emojis: string[] }[] = [
-  { group: "キラキラ", emojis: ["✨", "🌟", "💫", "⭐", "🎇", "🫧"] },
-  { group: "おごそか", emojis: ["🕯️", "⛩️", "🏮", "🌕", "🪷", "🍶", "🌿"] },
-  { group: "ラブリー", emojis: ["🎀", "💐", "🌸", "💝", "🩷", "🌷", "🦢", "🍡"] },
+  { group: "キラキラ", emojis: ["✨", "⭐", "🌟", "💫", "🌠", "💎", "🔮", "🪩", "🎇", "🫧"] },
+  { group: "おごそか", emojis: ["🕯️", "⛩️", "🏮", "🌕", "🪷", "🍶", "🌿", "🎋", "🍵", "📿", "🪭"] },
+  { group: "ラブリー", emojis: ["🎀", "💐", "🌸", "💝", "🩷", "🌷", "🦢", "🍡", "🧸", "🍓", "🌈"] },
+  { group: "聖堂", emojis: ["🕊️", "🔔", "🌹", "👼", "🎼", "🥀", "🤍", "⚜️"] },
+  { group: "祝祭", emojis: ["🌼", "🌺", "🪅", "🎊", "🪔", "🦚", "☀️", "💃", "🍋", "🥁"] },
 ];
